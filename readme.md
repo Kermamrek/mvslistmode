@@ -1,12 +1,14 @@
-# mvscomplete layout for AttractMode front end
-
-by Keil Miller Jr [Keil Miller Jr](http://keilmillerjr.com)
+# mvslistmode layout for AttractMode front end
 
 ![Image of layout](layout.gif)
 
 ## DESCRIPTION:
 
-*mvscomplete* is a layout for the [AttractMode](http://attractmode.org) front end. It was designed because I was seeking a better option than the 161-in-1 multicart for the neo geo. The 161-in-1 multicart has an awful menu, missing games, and a bunch of hacks.
+*mvslistmode* is a layout for the [AttractMode](http://attractmode.org) front end. It was originally taken from *mvscomplete*, by Keil Miller Jr, however I wanted to edit it to fit my own preferences. I liked the features and chosen fonts for the mvscomplete layout, however I wanted a more simple list view without the snapshots covering a majority of the screen. As well as including genre, I also decided to include a blurb showing the ROM's status in MAME, as I wanted a clearer picture if there would be emulation problems before playing a game I hadn't tried before.
+
+I might add more features in the future- I had an idea to add a small medal from raiden fighters somewhere if you played a game before (upgrading as you played it more times, potentially), however at the time I felt it might overcomplicate the simple layout I wanted to create. These sound like fun features though, and if I come back to this in the future I might add it as a toggle option.
+
+Everything below is from the original mvslistmode readme, as the installation instructions and various settings have not changed much since the original version.
 
 This layout is intended to be displayed at a minimum of VGA resolution (640x480) and will scale gracefully to any higher resolutions, including widescreen resolutions.
 
@@ -28,7 +30,7 @@ You may need to change file paths as necessary if your differs.
 ## Optional Files
 
 1. The [Shader module](https://github.com/keilmillerjr/shader-module) is **v1.0.0 RECOMMENDED**. Shader module is required if you intend to use crt shaders within the layout.
-2. The [Leap plugin](https://github.com/keilmillerjr/leap-plugin) is **OPTIONAL**. Leap plugin helps to leap over empty filters. Whacky things happen if you have a favorites filter and no roms selected as a favorite!
+2. The [Leap plugin](https://github.com/keilmillerjr/leap-plugin) is **OPTIONAL**. Leap plugin helps to leap over empty filters. Wacky things happen if you have a favorites filter and no roms selected as a favorite!
 3. The [FadeToGame plugin](https://github.com/keilmillerjr/fadetogame-plugin) is **OPTIONAL**. FadeToGame will fade the screen when transitioning to and from a game. Be sure to set "To Game Run Time" to at least *1620 milliseconds* if using Navigation Audio in mvscomplete.
 4. The [Randtro intro](https://github.com/keilmillerjr/randtro-intro) is **OPTIONAL**. Select specific or random videos to use as an intro.
 
