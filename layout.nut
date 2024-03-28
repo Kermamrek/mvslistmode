@@ -171,8 +171,8 @@ config.artwork.push({
 
 config.gameTitle <- {
 	x = overscan,
-	y = config.container.height - per(12, config.container.height - (overscan*2)) - (overscan*1.5),
-	width = per(62.5, config.container.width - (overscan*3)),
+	y = config.container.height - per(56, config.container.height - (overscan*2)) - (overscan*1.5),
+	width = per(85, config.container.width - (overscan*3)),
 	height = per(6, config.container.height - (overscan*2)),
 	align = Align.Left,
 	rgb = [255, 255, 255],
@@ -184,8 +184,8 @@ config.gameTitleOutline <- {
 
 config.gameInfo <- {
 	x = overscan,
-	y = config.container.height - per(6, config.container.height - (overscan*2)) - overscan,
-	width = per(62.5, config.container.width - (overscan*3)),
+	y = config.container.height - per(50, config.container.height - (overscan*2)) - overscan,
+	width = per(85, config.container.width - (overscan*3)),
 	height = per(6, config.container.height - (overscan*2)),
 	align = Align.Left,
 	rgb = [255, 255, 255],
@@ -197,9 +197,9 @@ config.gameInfoShadow <- {
 
 config.displayName <- {
 	x = overscan + per(62.5, config.container.width - (overscan*3)),
-	y = config.container.height - per(12, config.container.height - (overscan*2)) - (overscan*1.5),
+	y = config.container.height - per(97, config.container.height - (overscan*2)) - (overscan*1.5),
 	width = per(37.5, config.container.width - (overscan*3)),
-	height = per(6, config.container.height - (overscan*2)),
+	height = per(4, config.container.height - (overscan*2)),
 	align = Align.Right,
 	rgb = [255, 255, 255],
 }
@@ -210,15 +210,55 @@ config.displayNameShadow <- {
 
 config.filterName <- {
 	x = overscan + per(62.5, config.container.width - (overscan*3)),
-	y = config.container.height - per(6, config.container.height - (overscan*2)) - overscan,
+	y = config.container.height - per(94, config.container.height - (overscan*2)) - overscan,
 	width = per(37.5, config.container.width - (overscan*3)),
-	height = per(6, config.container.height - (overscan*2)),
+	height = per(4, config.container.height - (overscan*2)),
 	align = Align.Right,
 	rgb = [255, 255, 255],
 }
 
 config.filterNameShadow <- {
 	rgb = [0, 0, 0],
+}
+
+config.categoryName <- {
+	x = overscan + per(62.5, config.container.width - (overscan*3)),
+	y = config.container.height - per(6, config.container.height - (overscan*2)) - overscan,
+	width = per(37.5, config.container.width - (overscan*3)),
+	height = per(4, config.container.height - (overscan*2)),
+	align = Align.Right,
+	rgb = [255, 255, 255],
+}
+
+config.categoryNameShadow <- {
+	rgb = [0, 0, 0],
+}
+
+config.statusName <- {
+	x = overscan + per(62.5, config.container.width - (overscan*3)),
+	y = config.container.height - per(10, config.container.height - (overscan*2)) - overscan,
+	width = per(37.5, config.container.width - (overscan*3)),
+	height = per(4, config.container.height - (overscan*2)),
+	align = Align.Right,
+	rgb = [255, 255, 255],
+}
+
+config.statusNameShadow <- {
+	rgb = [0, 0, 0],
+}
+
+config.gameList <- {
+	x = overscan + 8,
+	//y = config.container.height - per(6, config.container.height - (overscan*2)) - overscan,
+	width = per(62.5, config.container.width - (overscan*3)),
+	height = per(4, config.container.height - (overscan*2)),
+	align = Align.Left,
+	rgb = [255, 255, 255],
+}
+
+config.gameListShadow <- {
+	rgb = [0, 0, 0],
+	alpha = 170,
 }
 
 // --------------------
@@ -299,6 +339,14 @@ function textShadow(obj, offset, direction="all") {
 	}
 }
 
+function trimmed_name( index_offset ) {
+	local s = split( fe.game_info( Info.Title, index_offset ), "(" );
+	if ( s.len() > 0 )
+			return s[0];
+
+	return "";
+}
+
 // --------------------
 // Layout
 // --------------------
@@ -327,50 +375,9 @@ class FadeVideo extends FadeArt {
 local video = FadeVideo("snap", -1, -1, 1, 1, toBool(userConfig["videoAudio"]), container);
 	setProps(video, config.video);
 
-// ---------- Marquee
-
-local marquee = container.add_image(pixelPath, -1, -1, 1, 1);
-	setProps(marquee, config.marquee);
-
-// ---------- Artwork
-
-
-
-local artwork = [];
-	for (local i=0; i<4; i++) {
-		artwork.push(PreserveArt("snap", config.artwork[i].x, config.artwork[i].y, config.artwork[i].width, config.artwork[i].height, container));
-		artwork[i].set_fit_or_fill("fill");
-		artwork[i].set_anchor(::Anchor.Center);
-		artwork[i].art.video_flags = Vid.ImagesOnly;
-		artwork[i].mipmap = true;
-	}
-
-class ShuffleArtwork extends Shuffle {
-	function _refreshAll(slot) { if (slot.art.file_name.len() == 0) slots.art.file_name = "mini" + userConfig.miniArt + ".png"; }
-	function _refreshSelected(slot) { shadeObject(slot, 100); }
-	function _refreshDeselected(slot) { shadeObject(slot, userConfig.artworkShade.tointeger()); }
-}
-local shuffleArtwork = ShuffleArtwork({save="mvscomplete", slots=artwork, reset=false});
-
-// ---------- Logos
-
-local logos = [];
-	for (local i=0; i<4; i++) {
-		logos.push(PreserveArt("wheel", config.artwork[i].x, config.artwork[i].y, config.artwork[i].width, config.artwork[i].height, container));
-		logos[i].set_fit_or_fill("fit");
-		logos[i].set_anchor(::Anchor.Top);
-		artwork[i].mipmap = true;
-	}
-
-class ShuffleLogos extends Shuffle {
-	function _refreshSelected(slot) { shadeObject(slot, 100); }
-	function _refreshDeselected(slot) { shadeObject(slot, userConfig.artworkShade.tointeger()); }
-}
-local shuffleLogos = ShuffleLogos({save="mvscomplete", slots=logos, reset=false});
-
 // ---------- Favorites
 
-local favorites = [];
+/*local favorites = [];
 	for (local i=0; i<4; i++) {
 		favorites.push(PreserveImage("star.png", config.artwork[i].x, config.artwork[i].y + (config.artwork[i].height*0.75), config.artwork[i].width, config.artwork[i].height/4, container));
 		favorites[i].set_fit_or_fill("fit");
@@ -384,7 +391,7 @@ class ShuffleFavorites extends Shuffle {
 	function _refreshDeselected(slot) { shadeObject(slot, userConfig.artworkShade.tointeger()); }
 }
 local shuffleFavorites = ShuffleFavorites({save="mvscomplete", slots=favorites, reset=false});
-
+*/
 // ---------- Game Title
 
 local gameTitle = [];
@@ -428,6 +435,85 @@ local filterName = [];
 		if (i<1) setProps(filterName[i], config.filterNameShadow);
 	}
 	textShadow(filterName, overscan*0.25, "bl");
+
+// ---------- Category Name
+
+local categoryName = [];
+	for (local i=0; i<2; i++) {
+		categoryName.push(container.add_text("[Category]", -1, -1, 1, 1));
+		setProps(categoryName[i], config.categoryName);
+
+		if (i<1) setProps(categoryName[i], config.categoryNameShadow);
+	}
+	textShadow(categoryName, overscan*0.25, "bl");
+
+	// ---------- Game Status
+
+	local statusName = [];
+		for (local i=0; i<2; i++) {
+			statusName.push(container.add_text("[Status]", -1, -1, 1, 1));
+			setProps(statusName[i], config.statusName);
+
+			if (i<1) setProps(statusName[i], config.statusNameShadow);
+		}
+		textShadow(statusName, overscan*0.25, "bl");
+
+		fe.add_transition_callback("gameStatus");
+		function gameStatus(ttype, var, ttime) {
+			if ( (ttype == Transition.FromOldSelection) || (ttype == Transition.ToNewList) || (ttype == Transition.ChangedTag) ){
+				switch (fe.game_info(Info.Status)) {
+					case "imperfect":
+						statusName[1].set_rgb(252, 186, 3);
+						break;
+					case "good":
+						statusName[1].set_rgb(255, 255, 255);
+						break;
+					case "preliminary":
+						statusName[1].set_rgb(255, 42, 0);
+						break;
+				}
+			}
+		}
+
+// ---------- Game List
+
+local gameList = [];
+local gameListShadow = [];
+	for (local i=0; i<9; i++) {
+		gameListShadow.push(container.add_text(trimmed_name(i-9), -1 - (overscan*0.20), (per(4, config.container.height - (overscan*2) - overscan) + ((config.gameList.height + overscan*0.10)*i)) + (overscan*0.20), 1, 1));
+		gameList.push(container.add_text(trimmed_name(i-9), -1, (per(4, config.container.height - (overscan*2) - overscan) + ((config.gameList.height + overscan*0.10)*i)), 1, 1));
+		setProps(gameListShadow[i], config.gameList);
+		setProps(gameListShadow[i], config.gameListShadow);
+		setProps(gameList[i], config.gameList);
+	}
+	local gameList2 = [];
+	local gameListShadow2 = [];
+	for (local i=0; i<9; i++) {
+		gameListShadow2.push(container.add_text(trimmed_name(i+1), -1 - (overscan*0.20), (per(64, config.container.height - (overscan*2) - overscan) + ((config.gameList.height + overscan*0.10)*i)) + (overscan*0.20), 1, 1));
+		gameList2.push(container.add_text(trimmed_name(i+1), -1, (per(64, config.container.height - (overscan*2) - overscan) + ((config.gameList.height + overscan*0.10)*i)), 1, 1));
+		setProps(gameListShadow2[i], config.gameList);
+		setProps(gameListShadow2[i], config.gameListShadow);
+		setProps(gameList2[i], config.gameList);
+	}
+	//gameListShadow.set_pos(gameList.x - overscan*0.25, gameList.y + overscan*0.25);
+	//textShadow(gameList, overscan*0.25, "bl");
+
+fe.add_transition_callback( "update_my_list" )
+function update_my_list( ttype, var, ttime )
+{
+    if (( ttype == Transition.FromOldSelection ) || ( ttype == Transition.ToNewList ))
+    {
+				for (local i=0; i<9; i++) {
+        	gameList[i].msg = trimmed_name(i-9);
+					gameListShadow[i].msg = trimmed_name(i-9);
+				}
+				for (local i=0; i<9; i++) {
+					gameList2[i].msg = trimmed_name(i+1);
+					gameListShadow2[i].msg = trimmed_name(i+1);
+				}
+    }
+    return false;
+}
 
 // --------------------
 // Sounds
@@ -489,5 +575,9 @@ switch (userConfig["crtShader"]){
 fe.add_transition_callback("favorites");
 function favorites(ttype, var, ttime) {
 	fe.game_info(Info.Favourite) == "1" ? setFavoritesColor(gameTitle[8]) : gameTitle[8].set_rgb(config.gameInfo.rgb[0], config.gameInfo.rgb[1], config.gameInfo.rgb[2]);
+	for (local i=0; i<9; i++) {
+		fe.game_info(Info.Favourite, -i - 1) == "1" ? setFavoritesColor(gameList[8 - i]) : gameList[8 - i].set_rgb(config.gameInfo.rgb[0], config.gameInfo.rgb[1], config.gameInfo.rgb[2]);
+		fe.game_info(Info.Favourite, i + 1) == "1" ? setFavoritesColor(gameList2[i]) : gameList2[i].set_rgb(config.gameInfo.rgb[0], config.gameInfo.rgb[1], config.gameInfo.rgb[2]);
+	}
 	return false;
 }
